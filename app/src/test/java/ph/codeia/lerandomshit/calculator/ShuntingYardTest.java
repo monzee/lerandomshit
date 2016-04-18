@@ -62,4 +62,20 @@ public class ShuntingYardTest {
         );
         assertEquals(BigDecimal.valueOf(100 + 321 / 3 - 2156 + 1032 * 32 / 4), eq.evaluate());
     }
+
+    @Test
+    public void withDecimal() {
+        ShuntingYard eq = new ShuntingYard(
+                new Push(1),
+                Apply.PLUS,
+                new Push(2),
+                Apply.TIMES,
+                new Push(3),
+                Apply.MINUS,
+                new Push(4),
+                Apply.DIVIDE,
+                new Push(5)
+        );
+        assertEquals(BigDecimal.valueOf(6.2), eq.evaluate());
+    }
 }

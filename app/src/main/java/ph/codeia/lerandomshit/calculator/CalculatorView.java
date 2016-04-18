@@ -33,6 +33,7 @@ public class CalculatorView implements CalcContract.View {
     public CalculatorView(CalcContract.Presenter presenter) {
         this.presenter = presenter;
         presenter.bind(this);
+        presenter.didPressClear();
     }
 
     @Override
@@ -49,19 +50,21 @@ public class CalculatorView implements CalcContract.View {
             subButton.setPressed(false);
             mulButton.setPressed(false);
             divButton.setPressed(false);
-            switch (operator) {
-                case PLUS:
-                    addButton.postOnAnimation(() -> addButton.setPressed(true));
-                    break;
-                case MINUS:
-                    subButton.postOnAnimation(() -> subButton.setPressed(true));
-                    break;
-                case TIMES:
-                    mulButton.postOnAnimation(() -> mulButton.setPressed(true));
-                    break;
-                case DIVIDE:
-                    divButton.postOnAnimation(() -> divButton.setPressed(true));
-                    break;
+            if (operator != null) {
+                switch (operator) {
+                    case PLUS:
+                        addButton.postOnAnimation(() -> addButton.setPressed(true));
+                        break;
+                    case MINUS:
+                        subButton.postOnAnimation(() -> subButton.setPressed(true));
+                        break;
+                    case TIMES:
+                        mulButton.postOnAnimation(() -> mulButton.setPressed(true));
+                        break;
+                    case DIVIDE:
+                        divButton.postOnAnimation(() -> divButton.setPressed(true));
+                        break;
+                }
             }
         }
     }
@@ -70,7 +73,7 @@ public class CalculatorView implements CalcContract.View {
             R.id.do_digit_0, R.id.do_digit_1, R.id.do_digit_2, R.id.do_digit_3, R.id.do_digit_4,
             R.id.do_digit_5, R.id.do_digit_6, R.id.do_digit_7, R.id.do_digit_8, R.id.do_digit_9,
             R.id.do_add, R.id.do_subtract, R.id.do_multiply, R.id.do_divide,
-            R.id.do_decimal_point,
+            R.id.do_decimal_point, R.id.do_equals, R.id.do_clear, R.id.do_backspace
     })
     public void onButtonClick(View view) {
         switch (view.getId()) {
@@ -118,6 +121,15 @@ public class CalculatorView implements CalcContract.View {
                 break;
             case R.id.do_decimal_point:
                 presenter.didPressDecimalPoint();
+                break;
+            case R.id.do_equals:
+                presenter.didPressEquals();
+                break;
+            case R.id.do_clear:
+                presenter.didPressClear();
+                break;
+            case R.id.do_backspace:
+                presenter.didPressBackspace();
                 break;
         }
     }

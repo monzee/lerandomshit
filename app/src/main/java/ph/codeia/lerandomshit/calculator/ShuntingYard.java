@@ -31,7 +31,12 @@ public class ShuntingYard {
 
         @Override
         public void exec(Deque<BigDecimal> output) {
-            output.add(value);
+            output.push(value);
+        }
+
+        @Override
+        public String toString() {
+            return value.toString();
         }
     }
 
@@ -39,7 +44,13 @@ public class ShuntingYard {
         PLUS(1, BigDecimal::add),
         MINUS(1, BigDecimal::subtract),
         TIMES(2, BigDecimal::multiply),
-        DIVIDE(2, BigDecimal::divide);
+        DIVIDE(2, (a, b) -> {
+            try {
+                return a.divide(b);
+            } catch (ArithmeticException e) {
+                return a.divide(b, 10, BigDecimal.ROUND_HALF_UP);
+            }
+        });
 
         private final int precedence;
         private final BinaryOperator<BigDecimal> operation;
@@ -80,7 +91,7 @@ public class ShuntingYard {
         }
     }
 
-    BigDecimal evaluate() {
+    public BigDecimal evaluate() {
         if (output.isEmpty()) {
             for (Command c : machine) {
                 c.exec(output);
