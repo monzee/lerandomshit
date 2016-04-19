@@ -11,7 +11,7 @@ public class CalculatorModel implements CalcContract.Model {
     private final StringBuilder buffer = new StringBuilder();
     private final List<ShuntingYard.Command> equation = new ArrayList<>();
     private CalcContract.Highlightable highlighted;
-    private boolean shouldClear = false;
+    private boolean awaitingOperator = true;
     private boolean hasDecimalPoint = false;
 
     @Override
@@ -21,7 +21,7 @@ public class CalculatorModel implements CalcContract.Model {
         equation.toArray(result);
         equation.clear();
         highlighted = null;
-        shouldClear = true;
+        awaitingOperator = false;
         return result;
     }
 
@@ -31,7 +31,7 @@ public class CalculatorModel implements CalcContract.Model {
             buffer.append(c);
             hasDecimalPoint = true;
         }
-        shouldClear = false;
+        awaitingOperator = true;
     }
 
     @Override
@@ -43,14 +43,18 @@ public class CalculatorModel implements CalcContract.Model {
             hasDecimalPoint = buffer.charAt(last) == '.';
             buffer.deleteCharAt(last);
         }
-        shouldClear = false;
+        awaitingOperator = true;
     }
 
     @Override
     public void enqueue(ShuntingYard.Apply operator) {
-        equation.add(flush());
-        equation.add(operator);
-        shouldClear = true;
+        if (awaitingOperator || equation.isEmpty()) {
+            equation.add(flush());
+            equation.add(operator);
+            awaitingOperator = false;
+        } else {
+            equation.set(equation.size() - 1, operator);
+        }
     }
 
     @Override
@@ -60,7 +64,7 @@ public class CalculatorModel implements CalcContract.Model {
 
     @Override
     public boolean shouldClearDisplay() {
-        return shouldClear;
+        return !awaitingOperator;
     }
 
     @NonNull
