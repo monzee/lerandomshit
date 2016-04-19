@@ -21,4 +21,8 @@ public class CalculatorModule {
         presenter.bind(view);
         return view;
     }
+
+    @PerActivity @Provides CalcContract.Presenter providePresenter(CalcContract.Model model) {
+        return new CalculatorPresenter(model);
+    }
 }

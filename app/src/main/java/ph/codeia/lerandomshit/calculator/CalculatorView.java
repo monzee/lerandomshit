@@ -10,7 +10,7 @@ import butterknife.OnClick;
 import ph.codeia.lerandomshit.R;
 
 public class CalculatorView implements CalcContract.View {
-    @BindBool(R.bool.bound)
+    @BindBool(R.bool.yes)
     boolean isBound;
 
     @Bind(R.id.display)
@@ -61,10 +61,6 @@ public class CalculatorView implements CalcContract.View {
                         break;
                     case DIVIDE:
                         divButton.postOnAnimation(() -> divButton.setPressed(true));
-                        break;
-                    case SOMETHING:
-                        // shouldn't have called this in the first place if it's
-                        // not one of the 4 above
                         break;
                 }
             }

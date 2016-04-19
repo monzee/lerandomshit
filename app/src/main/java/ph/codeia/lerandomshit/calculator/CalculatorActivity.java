@@ -23,10 +23,4 @@ public class CalculatorActivity extends AppCompatActivity {
                 .calculator(new CalculatorModule(this))
                 .inject(this);
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.unbind();
-    }
 }
