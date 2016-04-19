@@ -12,6 +12,9 @@ public class CalculatorActivity extends AppCompatActivity {
     @Inject
     CalcContract.View view;
 
+    @Inject
+    CalcContract.Presenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,5 +22,11 @@ public class CalculatorActivity extends AppCompatActivity {
         ((LeRandomShit) getApplication()).getInjector()
                 .calculator(new CalculatorModule(this))
                 .inject(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.unbind();
     }
 }

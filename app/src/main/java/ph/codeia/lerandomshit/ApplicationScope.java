@@ -1,11 +1,13 @@
 package ph.codeia.lerandomshit;
 
+import javax.inject.Singleton;
+
 import dagger.Component;
 import ph.codeia.lerandomshit.calculator.CalculatorModule;
 import ph.codeia.lerandomshit.calculator.CalculatorScope;
-import ph.codeia.lerandomshit.util.PerActivity;
 
+@Singleton
 @Component(modules = ApplicationModule.class)
 public interface ApplicationScope {
-   @PerActivity CalculatorScope calculator(CalculatorModule module);
+    CalculatorScope calculator(CalculatorModule module);
 }

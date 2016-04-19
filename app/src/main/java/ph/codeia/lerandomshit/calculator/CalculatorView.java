@@ -32,8 +32,6 @@ public class CalculatorView implements CalcContract.View {
 
     public CalculatorView(CalcContract.Presenter presenter) {
         this.presenter = presenter;
-        presenter.bind(this);
-        presenter.didPressClear();
     }
 
     @Override
@@ -44,7 +42,7 @@ public class CalculatorView implements CalcContract.View {
     }
 
     @Override
-    public void highlight(CalcContract.Operator operator) {
+    public void highlight(CalcContract.Highlightable operator) {
         if (isBound) {
             addButton.setPressed(false);
             subButton.setPressed(false);
@@ -63,6 +61,10 @@ public class CalculatorView implements CalcContract.View {
                         break;
                     case DIVIDE:
                         divButton.postOnAnimation(() -> divButton.setPressed(true));
+                        break;
+                    case SOMETHING:
+                        // shouldn't have called this in the first place if it's
+                        // not one of the 4 above
                         break;
                 }
             }
@@ -108,16 +110,16 @@ public class CalculatorView implements CalcContract.View {
                 presenter.didPressDigit(9);
                 break;
             case R.id.do_add:
-                presenter.didPressOperator(CalcContract.Operator.PLUS);
+                presenter.didPressOperator(CalcContract.Highlightable.PLUS);
                 break;
             case R.id.do_subtract:
-                presenter.didPressOperator(CalcContract.Operator.MINUS);
+                presenter.didPressOperator(CalcContract.Highlightable.MINUS);
                 break;
             case R.id.do_multiply:
-                presenter.didPressOperator(CalcContract.Operator.TIMES);
+                presenter.didPressOperator(CalcContract.Highlightable.TIMES);
                 break;
             case R.id.do_divide:
-                presenter.didPressOperator(CalcContract.Operator.DIVIDE);
+                presenter.didPressOperator(CalcContract.Highlightable.DIVIDE);
                 break;
             case R.id.do_decimal_point:
                 presenter.didPressDecimalPoint();

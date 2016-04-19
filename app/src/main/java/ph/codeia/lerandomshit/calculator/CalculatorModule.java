@@ -15,13 +15,10 @@ public class CalculatorModule {
         this.activity = activity;
     }
 
-    @PerActivity @Provides CalcContract.View view(CalcContract.Presenter p) {
-        CalcContract.View view = new CalculatorView(p);
+    @PerActivity @Provides CalcContract.View provideView(CalcContract.Presenter presenter) {
+        CalcContract.View view = new CalculatorView(presenter);
         ButterKnife.bind(view, activity);
+        presenter.bind(view);
         return view;
-    }
-
-    @PerActivity @Provides CalcContract.Presenter presenter() {
-        return new CalculatorPresenter();
     }
 }

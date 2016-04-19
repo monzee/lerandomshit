@@ -10,19 +10,25 @@ public class CalculatorPresenter implements CalcContract.Presenter {
     private final StringBuilder buffer = new StringBuilder();
     private final List<ShuntingYard.Command> equation = new ArrayList<>();
     private boolean hasDecimalPoint = false;
-    private CalcContract.Operator op;
-    private BigDecimal lastAnswer;
+    private boolean shouldClearOnNextDigit = false;
+    private CalcContract.Highlightable highlightedKey;
     private CalcContract.View view;
 
     @Override
     public void bind(CalcContract.View view) {
         this.view = view;
+        update();
+    }
+
+    @Override
+    public void unbind() {
+        view = null;
     }
 
     @Override
     public void didPressDigit(int n) {
-        if (op != null) {
-            switch (op) {
+        if (highlightedKey != null && highlightedKey != CalcContract.Highlightable.SOMETHING) {
+            switch (highlightedKey) {
                 case PLUS:
                     equation.add(ShuntingYard.Apply.PLUS);
                     break;
@@ -36,16 +42,26 @@ public class CalculatorPresenter implements CalcContract.Presenter {
                     equation.add(ShuntingYard.Apply.DIVIDE);
                     break;
             }
-            op = null;
+            highlightedKey = CalcContract.Highlightable.SOMETHING;
         }
-        buffer.append(n);
-        update();
+        if (shouldClearOnNextDigit) {
+            buffer.setLength(0);
+            hasDecimalPoint = false;
+            shouldClearOnNextDigit = false;
+        }
+        if (n != 0 || buffer.length() > 0) {
+            buffer.append(n);
+            update();
+        }
     }
 
     @Override
     public void didPressDecimalPoint() {
         if (hasDecimalPoint) {
             return;
+        }
+        if (shouldClearOnNextDigit) {
+            buffer.setLength(0);
         }
         if (buffer.length() == 0) {
             didPressDigit(0);
@@ -56,16 +72,14 @@ public class CalculatorPresenter implements CalcContract.Presenter {
     }
 
     @Override
-    public void didPressOperator(CalcContract.Operator operator) {
+    public void didPressOperator(CalcContract.Highlightable key) {
         if (buffer.length() > 0) {
             flush();
-        } else if (lastAnswer != null) {
-            equation.add(new ShuntingYard.Push(lastAnswer));
-            lastAnswer = null;
         } else {
             equation.add(new ShuntingYard.Push(BigDecimal.ZERO));
         }
-        op = operator;
+        highlightedKey = key;
+        shouldClearOnNextDigit = true;
         update();
     }
 
@@ -74,15 +88,14 @@ public class CalculatorPresenter implements CalcContract.Presenter {
         if (buffer.length() > 0) {
             flush();
             compute();
-            view.highlight(null);
         }
     }
 
     @Override
     public void didPressClear() {
-        op = null;
+        highlightedKey = null;
         hasDecimalPoint = false;
-        lastAnswer = null;
+        shouldClearOnNextDigit = false;
         buffer.setLength(0);
         equation.clear();
         update();
@@ -90,13 +103,20 @@ public class CalculatorPresenter implements CalcContract.Presenter {
 
     @Override
     public void didPressBackspace() {
-
+        if (buffer.length() > 0) {
+            int last = buffer.length() - 1;
+            if (buffer.charAt(last) == '.') {
+                hasDecimalPoint = false;
+            }
+            buffer.deleteCharAt(last);
+            shouldClearOnNextDigit = false;
+            update();
+        }
     }
 
     private void flush() {
         equation.add(new ShuntingYard.Push(new BigDecimal(buffer.toString())));
-        buffer.setLength(0);
-        hasDecimalPoint = false;
+        shouldClearOnNextDigit = true;
     }
 
     private void compute() {
@@ -107,23 +127,27 @@ public class CalculatorPresenter implements CalcContract.Presenter {
             sb.append(c.toString()).append(' ');
         }
         Log.d("calc", sb.toString());
-        lastAnswer = calc.evaluate();
-        Log.d("calc", "answer: " + lastAnswer);
+        String answer = calc.evaluate().toString();
+        Log.d("calc", "answer: " + answer);
         equation.clear();
-        if (view != null) {
-            view.show(lastAnswer.toString());
-        }
+        buffer.setLength(0);
+        buffer.append(answer);
+        shouldClearOnNextDigit = true;
+        highlightedKey = null;
+        update();
     }
 
     private void update() {
         if (view != null) {
             if (buffer.length() > 0) {
                 view.show(buffer.toString());
-            } else if (op != null) {
-                view.highlight(op);
             } else {
-                view.highlight(null);
                 view.show("0");
+            }
+            if (highlightedKey == null) {
+                view.highlight(null);
+            } else if (highlightedKey != CalcContract.Highlightable.SOMETHING){
+                view.highlight(highlightedKey);
             }
         }
     }
