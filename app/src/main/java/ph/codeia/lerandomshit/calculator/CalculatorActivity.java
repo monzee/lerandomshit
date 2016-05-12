@@ -10,17 +10,18 @@ import ph.codeia.lerandomshit.R;
 
 public class CalculatorActivity extends AppCompatActivity {
     @Inject
-    CalcContract.View view;
+    CalcContract.Display view;
 
     @Inject
-    CalcContract.Presenter presenter;
+    CalcContract.Interaction presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculator);
         ((LeRandomShit) getApplication()).getInjector()
-                .calculator(new CalculatorModule(this))
+                .calculator(new CalculatorWiring.Scope(this))
                 .inject(this);
+        presenter.bind(view);
     }
 }

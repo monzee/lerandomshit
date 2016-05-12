@@ -4,34 +4,37 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import butterknife.Bind;
+import javax.inject.Inject;
+
 import butterknife.BindBool;
+import butterknife.BindView;
 import butterknife.OnClick;
 import ph.codeia.lerandomshit.R;
 
-public class CalculatorView implements CalcContract.View {
+public class CalculatorView implements CalcContract.Display {
     @BindBool(R.bool.yes)
     boolean isBound;
 
-    @Bind(R.id.display)
+    @BindView(R.id.display)
     TextView display;
 
-    @Bind(R.id.do_add)
+    @BindView(R.id.do_add)
     Button addButton;
 
-    @Bind(R.id.do_subtract)
+    @BindView(R.id.do_subtract)
     Button subButton;
 
-    @Bind(R.id.do_multiply)
+    @BindView(R.id.do_multiply)
     Button mulButton;
 
-    @Bind(R.id.do_divide)
+    @BindView(R.id.do_divide)
     Button divButton;
 
-    private final CalcContract.Presenter presenter;
+    private final CalcContract.Interaction user;
 
-    public CalculatorView(CalcContract.Presenter presenter) {
-        this.presenter = presenter;
+    @Inject
+    public CalculatorView(CalcContract.Interaction presenter) {
+        user = presenter;
     }
 
     @Override
@@ -76,58 +79,58 @@ public class CalculatorView implements CalcContract.View {
     public void onButtonClick(View view) {
         switch (view.getId()) {
             case R.id.do_digit_0:
-                presenter.didPressDigit(0);
+                user.didPressDigit(0);
                 break;
             case R.id.do_digit_1:
-                presenter.didPressDigit(1);
+                user.didPressDigit(1);
                 break;
             case R.id.do_digit_2:
-                presenter.didPressDigit(2);
+                user.didPressDigit(2);
                 break;
             case R.id.do_digit_3:
-                presenter.didPressDigit(3);
+                user.didPressDigit(3);
                 break;
             case R.id.do_digit_4:
-                presenter.didPressDigit(4);
+                user.didPressDigit(4);
                 break;
             case R.id.do_digit_5:
-                presenter.didPressDigit(5);
+                user.didPressDigit(5);
                 break;
             case R.id.do_digit_6:
-                presenter.didPressDigit(6);
+                user.didPressDigit(6);
                 break;
             case R.id.do_digit_7:
-                presenter.didPressDigit(7);
+                user.didPressDigit(7);
                 break;
             case R.id.do_digit_8:
-                presenter.didPressDigit(8);
+                user.didPressDigit(8);
                 break;
             case R.id.do_digit_9:
-                presenter.didPressDigit(9);
+                user.didPressDigit(9);
                 break;
             case R.id.do_add:
-                presenter.didPressOperator(CalcContract.Highlightable.PLUS);
+                user.didPressOperator(CalcContract.Highlightable.PLUS);
                 break;
             case R.id.do_subtract:
-                presenter.didPressOperator(CalcContract.Highlightable.MINUS);
+                user.didPressOperator(CalcContract.Highlightable.MINUS);
                 break;
             case R.id.do_multiply:
-                presenter.didPressOperator(CalcContract.Highlightable.TIMES);
+                user.didPressOperator(CalcContract.Highlightable.TIMES);
                 break;
             case R.id.do_divide:
-                presenter.didPressOperator(CalcContract.Highlightable.DIVIDE);
+                user.didPressOperator(CalcContract.Highlightable.DIVIDE);
                 break;
             case R.id.do_decimal_point:
-                presenter.didPressDecimalPoint();
+                user.didPressDecimalPoint();
                 break;
             case R.id.do_equals:
-                presenter.didPressEquals();
+                user.didPressEquals();
                 break;
             case R.id.do_clear:
-                presenter.didPressClear();
+                user.didPressClear();
                 break;
             case R.id.do_backspace:
-                presenter.didPressBackspace();
+                user.didPressBackspace();
                 break;
         }
     }

@@ -4,13 +4,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 public abstract class CalcContract {
-    public interface View {
+    public interface Display {
         void show(String digits);
         void highlight(Highlightable key);
     }
 
-    public interface Presenter {
-        void bind(View view);
+    public interface Interaction {
+        void bind(Display view);
         void didPressDigit(int n);
         void didPressDecimalPoint();
         void didPressOperator(Highlightable key);
@@ -19,7 +19,7 @@ public abstract class CalcContract {
         void didPressBackspace();
     }
 
-    public interface Model {
+    public interface State {
         ShuntingYard.Command[] dump();
         void enqueue(char c);
         void enqueue(int n);

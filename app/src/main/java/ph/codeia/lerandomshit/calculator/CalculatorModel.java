@@ -7,12 +7,20 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CalculatorModel implements CalcContract.Model {
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
+public class CalculatorModel implements CalcContract.State {
     private final StringBuilder buffer = new StringBuilder();
     private final List<ShuntingYard.Command> equation = new ArrayList<>();
     private CalcContract.Highlightable highlighted;
     private boolean awaitingOperator = true;
     private boolean hasDecimalPoint = false;
+
+    @Inject
+    public CalculatorModel() {
+    }
 
     @Override
     public ShuntingYard.Command[] dump() {

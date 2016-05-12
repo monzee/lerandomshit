@@ -3,15 +3,15 @@ package ph.codeia.lerandomshit;
 import android.app.Application;
 
 public class LeRandomShit extends Application {
-    private ApplicationScope injector;
+    private ApplicationWiring.Injector injector;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        injector = DaggerApplicationScope.create();
+        injector = DaggerApplicationWiring_Injector.create();
     }
 
-    public ApplicationScope getInjector() {
+    public ApplicationWiring.Injector getInjector() {
         return injector;
     }
 }

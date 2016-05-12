@@ -1,15 +1,18 @@
 package ph.codeia.lerandomshit.calculator;
 
-public class CalculatorPresenter implements CalcContract.Presenter {
-    private final CalcContract.Model model;
-    private CalcContract.View view;
+import javax.inject.Inject;
 
-    public CalculatorPresenter(CalcContract.Model model) {
+public class CalculatorPresenter implements CalcContract.Interaction {
+    private final CalcContract.State model;
+    private CalcContract.Display view;
+
+    @Inject
+    public CalculatorPresenter(CalcContract.State model) {
         this.model = model;
     }
 
     @Override
-    public void bind(CalcContract.View view) {
+    public void bind(CalcContract.Display view) {
         this.view = view;
         update();
     }
