@@ -6,6 +6,6 @@ public abstract class LaunchContract {
     }
 
     public enum Feature {
-        CALCULATOR,
+        CALCULATOR, LEDDIT
     }
 }

@@ -19,7 +19,7 @@ public class CalculatorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calculator);
-        ((LeRandomShit) getApplication()).getInjector()
+        LeRandomShit.getInjector()
                 .calculator(new CalculatorWiring.Scope(this))
                 .inject(this);
         presenter.bind(view);

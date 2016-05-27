@@ -4,7 +4,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "24.0.0 rc3"
+    buildToolsVersion "24.0.0 rc4"
 
     defaultConfig {
         applicationId "ph.codeia.lerandomshit"
@@ -12,6 +12,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
     buildTypes {
         release {
@@ -32,20 +33,39 @@ android {
 }
 
 ext {
-    daggerVersion = '2.2'
+    daggerVersion = '2.4'
     bkVersion = '8.0.1'
     supportLibVersion = '23.4.0'
+    retrofitVersion = '2.0.2'
+    junitVersion = '4.12'
+    supportTestVersion = '0.5'
+    slf4jVersion = '1.7.21'
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile "com.android.support:appcompat-v7:${supportLibVersion}"
-    compile "com.android.support:design:${supportLibVersion}"
+    testCompile "org.slf4j:slf4j-simple:$slf4jVersion"
+    testCompile "junit:junit:$junitVersion"
+    androidTestCompile "junit:junit:$junitVersion"
+    androidTestCompile("com.android.support.test:runner:$supportTestVersion") {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestCompile("com.android.support.test:rules:$supportTestVersion") {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
 
-    compile "com.google.dagger:dagger:${daggerVersion}"
-    apt "com.google.dagger:dagger-compiler:${daggerVersion}"
+    compile "com.android.support:appcompat-v7:$supportLibVersion"
+    compile "com.android.support:design:$supportLibVersion"
 
-    compile "com.jakewharton:butterknife:${bkVersion}"
-    apt "com.jakewharton:butterknife-compiler:${bkVersion}"
+    compile "com.google.dagger:dagger:$daggerVersion"
+    apt "com.google.dagger:dagger-compiler:$daggerVersion"
+    testApt "com.google.dagger:dagger-compiler:$daggerVersion"
+    androidTestApt "com.google.dagger:dagger-compiler:$daggerVersion"
+
+    compile "com.jakewharton:butterknife:$bkVersion"
+    apt "com.jakewharton:butterknife-compiler:$bkVersion"
+
+    compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    compile "com.squareup.retrofit2:converter-jackson:$retrofitVersion"
 }
+
