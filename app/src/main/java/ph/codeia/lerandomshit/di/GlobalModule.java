@@ -1,12 +1,9 @@
-package ph.codeia.lerandomshit;
+package ph.codeia.lerandomshit.di;
 
-import android.app.Application;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -15,55 +12,15 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import dagger.Component;
 import dagger.Module;
 import dagger.Provides;
-import ph.codeia.lerandomshit.calculator.CalculatorWiring;
-import ph.codeia.lerandomshit.leddit.FrontPage;
 import ph.codeia.lerandomshit.util.Logging;
 
+/**
+ * This file is a part of the Le Random Shit project.
+ */
 @Module
-public class LeRandomShit extends Application {
-    private static Injector injector;
-    private static Globals globals;
-
-    @Singleton
-    @Component(modules = LeRandomShit.class)
-    public interface Injector {
-        CalculatorWiring.Injector calculator(CalculatorWiring.Scope s);
-    }
-
-    @Singleton
-    @Component(modules = {LeRandomShit.class, SessionScope.class})
-    public interface Globals {
-        @Named("worker") Executor worker();
-        @Named("ui") Executor ui();
-        Logging log();
-        @Named("top_posts") List<FrontPage.Post> topPosts();
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        injector = DaggerLeRandomShit_Injector.builder().leRandomShit(this).build();
-    }
-
-    public static Injector getInjector() {
-        return injector;
-    }
-
-    @Provides
-    public static Globals globals() {
-        if (globals == null) {
-            globals = DaggerLeRandomShit_Globals.create();
-        }
-        return globals;
-    }
-
-    @Provides
-    public Context context() {
-        return this;
-    }
+public abstract class GlobalModule {
 
     @Provides @Singleton
     public static Logging logger() {

@@ -1,15 +1,14 @@
 package ph.codeia.lerandomshit.leddit;
 
-import java.util.List;
-
 import javax.inject.Named;
 
 import dagger.Binds;
 import dagger.Component;
 import dagger.Module;
 import dagger.Provides;
-import ph.codeia.lerandomshit.ActivityScope;
 import ph.codeia.lerandomshit.LeRandomShit;
+import ph.codeia.lerandomshit.di.ActivityModule;
+import ph.codeia.lerandomshit.di.CurrentContext;
 import ph.codeia.lerandomshit.util.PerActivity;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -20,7 +19,8 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 @PerActivity
 @Component(dependencies = LeRandomShit.Globals.class, modules = {
         LedditInjector.Scope.class,
-        ActivityScope.class,
+        ActivityModule.class,
+        CurrentContext.class,
 }) public interface LedditInjector {
     void inject(FrontPageActivity a);
 
@@ -36,21 +36,19 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
         @Provides @Named("page_size")
         static int pageSize() {
-            return 20;
+            return 30;
         }
 
         @Binds
-        abstract FrontPageContract.Interaction interaction(FrontPagePresenter p);
+        abstract FrontPage.Synchronization synchronization(FrontPagePresenter p);
 
         @Binds
-        abstract FrontPageContract.Synchronization sync(FrontPagePresenter p);
+        abstract FrontPage.Interaction interaction(FrontPagePresenter p);
 
         @Binds
-        abstract FrontPageContract.Service service(LedditSession s);
+        abstract FrontPage.Display display(FrontPageView v);
 
-        @Provides
-        static List<Hn.Story> stories(@Named("top") LedditSession.State state) {
-            return state.stories;
-        }
+        @Binds
+        abstract FrontPage.DataSource dataSource(RestService s);
     }
 }

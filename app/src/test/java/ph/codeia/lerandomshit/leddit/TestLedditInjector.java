@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -25,9 +26,10 @@ import ph.codeia.lerandomshit.util.PerActivity;
 @Component(modules = {
         LedditInjector.Scope.class,
         TestLedditInjector.Threading.class,
-        TestLedditInjector.FrontPage.class,
+        TestLedditInjector.FrontPageModule.class,
 }) public interface TestLedditInjector {
     void inject(RestServiceTest t);
+    void inject(MaterializeBadOffsetsTest t);
 
     @Module
     class Threading {
@@ -84,43 +86,28 @@ import ph.codeia.lerandomshit.util.PerActivity;
     }
 
     @Module
-    class FrontPage {
-        @Provides
-        static FrontPageContract.Display view() {
-            return new FrontPageContract.Display() {
-                public Queue<String> messages = new ArrayDeque<>();
-                public boolean refreshed = false;
-                public int selected = -1;
-
-                @Override
-                public void tell(String message) {
-                    messages.add(message);
-                }
-
-                @Override
-                public void refresh() {
-                    refreshed = true;
-                }
-
-                @Override
-                public void drillInto(int storyId) {
-                    selected = storyId;
-                }
-            };
-        }
+    class FrontPageModule {
 
         @Provides
-        static FrontPageContract.Synchronization sync() {
-            return new FrontPageContract.Synchronization() {
-                public FrontPageContract.Display view;
-
+        static FrontPage.Synchronization synchronization() {
+            return new FrontPage.Synchronization() {
                 @Override
-                public void bind(FrontPageContract.Display view) {
-                    this.view = view;
+                public void bind(FrontPage.Display view) {
+
                 }
 
                 @Override
-                public void fetchFrontPage() {
+                public void fetchPage(FrontPage.Page page) {
+
+                }
+
+                @Override
+                public void fetchMore() {
+
+                }
+
+                @Override
+                public void pageFetched(List<FrontPage.Post> posts) {
 
                 }
             };
